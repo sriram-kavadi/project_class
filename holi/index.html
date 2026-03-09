@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HoliColor – ACE Engg College</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #050d1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Nunito', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated star field ── */
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star  { position: absolute; border-radius: 50%; background: #fff;
+             animation: twinkle 3s infinite alternate; }
+    @keyframes twinkle {
+      from { opacity: .15; transform: scale(1);   }
+      to   { opacity: .85; transform: scale(1.5); }
+    }
+
+    /* ── Floating paint splats ── */
+    .splats { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .splat  {
+      position: absolute; border-radius: 50%;
+      filter: blur(60px); opacity: .18;
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+    @keyframes drift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px,30px) scale(1.15); }
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative; z-index: 10;
+      width: 100%; padding: 18px 24px 14px;
+      background: #0a1628;
+      text-align: center;
+      border-bottom: 2px solid #1a2a45;
+    }
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #ff6bff, #00e5ff, #ffe000, #ff6bff);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 4s linear infinite;
+    }
+    @keyframes shimmer { 0%{background-position:0%} 100%{background-position:300%} }
+
+    /* ── Main card ── */
+    main {
+      position: relative; z-index: 10;
+      flex: 1; display: flex;
+      align-items: center; justify-content: center;
+      width: 100%; padding: 60px 20px;
+    }
+    .card {
+      background: rgba(10,22,48,0.88);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 56px 52px 48px;
+      text-align: center;
+      max-width: 500px; width: 100%;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 60px rgba(0,0,0,0.65);
+      animation: fadeUp .7s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(36px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .holi-label {
+      font-size: 1.3rem; font-weight: 900;
+      letter-spacing: 3px; color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .lead {
+      font-size: 1.7rem; font-weight: 700;
+      color: #c8d8ff;
+      margin-bottom: 36px;
+      line-height: 1.3;
+    }
+
+    /* ── CTA button ── */
+    /*
+      ⚠️  CRITICAL: href="playHoli" must match <url-pattern>/playHoli</url-pattern>
+          in web.xml EXACTLY (case-sensitive, no trailing slash).
+          A mismatch = 404 Not Found.
+    */
+    .btn-play {
+      display: inline-flex;
+      align-items: center; gap: 10px;
+      padding: 16px 48px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #00c9ff, #9b59b6);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      letter-spacing: 2px;
+      text-decoration: none;
+      box-shadow: 0 0 28px #00c9ff88, 0 6px 30px rgba(0,0,0,0.4);
+      transition: transform .25s, box-shadow .25s;
+      animation: pulseCTA 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseCTA {
+      0%,100% { box-shadow: 0 0 22px #00c9ff88, 0 6px 28px rgba(0,0,0,0.4); }
+      50%      { box-shadow: 0 0 46px #9b59b6bb, 0 8px 40px rgba(0,0,0,0.5); }
+    }
+    .btn-play:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 0 50px #00c9ffaa, 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    /* ── Paint blob decorations ── */
+    .blobs {
+      display: flex; justify-content: center; gap: 12px;
+      margin-bottom: 36px; flex-wrap: wrap;
+    }
+    .blob {
+      width: 22px; height: 22px; border-radius: 60% 40% 55% 45%/50% 60% 40% 50%;
+      opacity: .85;
+      animation: wobble 3s ease-in-out infinite alternate;
+    }
+    @keyframes wobble {
+      from { border-radius: 60% 40% 55% 45%/50% 60% 40% 50%; transform: rotate(-8deg) scale(1); }
+      to   { border-radius: 40% 60% 45% 55%/60% 40% 55% 45%; transform: rotate(8deg) scale(1.12); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background layers -->
+  <div class="stars"  id="stars"></div>
+  <div class="splats" id="splats"></div>
+
+  <!-- Header -->
+  <header>
+    <h1>ACE Engg College 🎨</h1>
+  </header>
+
+  <!-- Main landing card -->
+  <main>
+    <div class="card">
+      <div class="holi-label">🎉 HAPPY HOLI! 🖐️</div>
+      <p class="lead">Ready to discover your<br><strong>Holi color</strong> for today?</p>
+
+      <!-- Paint blobs preview -->
+      <div class="blobs">
+        <div class="blob" style="background:#FF4C4C; animation-delay:0s;"></div>
+        <div class="blob" style="background:#4C9EFF; animation-delay:.4s;"></div>
+        <div class="blob" style="background:#4CDD6A; animation-delay:.8s;"></div>
+        <div class="blob" style="background:#FFE14C; animation-delay:1.2s;"></div>
+        <div class="blob" style="background:#FF6EB5; animation-delay:1.6s;"></div>
+      </div>
+
+      <!--
+        ✅ FIX: href="playHoli" matches <url-pattern>/playHoli</url-pattern> in web.xml
+           Before the fix, students were getting 404 because the URL pattern
+           in web.xml was either missing or named differently (e.g. /HoliColor).
+      -->
+      <a href="playHoli" class="btn-play">🎨 &nbsp;Play Holi!</a>
+    </div>
+  </main>
+
+  <script>
+    // ── Generate star field ──
+    const sf = document.getElementById('stars');
+    for (let i = 0; i < 130; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const sz = Math.random() * 2.5 + 0.4;
+      s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*5}s;animation-duration:${2+Math.random()*4}s`;
+      sf.appendChild(s);
+    }
+
+    // ── Generate ambient color splats ──
+    const colors = ['#ff6bff','#00e5ff','#ffe000','#ff4c4c','#4cdd6a'];
+    const sp = document.getElementById('splats');
+    colors.forEach((c, i) => {
+      const d = document.createElement('div');
+      d.className = 'splat';
+      const sz = 200 + Math.random() * 180;
+      d.style.cssText = `width:${sz}px;height:${sz}px;background:${c};top:${10+i*15}%;left:${5+i*18}%;animation-delay:${i*2}s;animation-duration:${12+i*2}s`;
+      sp.appendChild(d);
+    });
+  </script>
+</body>
+</html>
