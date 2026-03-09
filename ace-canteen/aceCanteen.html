@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ACE Canteen – 5 Mins or FREE!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-dark:   #2b3a6b;
+      --blue-mid:    #3b52a5;
+      --blue-light:  #4a6fd4;
+      --green:       #3ec45a;
+      --green-dark:  #2da048;
+      --gold:        #f5c842;
+      --white:       #ffffff;
+      --off-white:   #f0f4ff;
+      --text-muted:  #a8b8e8;
+      --danger:      #ff4e4e;
+    }
+
+    html { height: 100%; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--blue-dark);
+      min-height: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+      padding: 32px 0 48px;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      pointer-events: none;
+      animation: blobFloat 8s ease-in-out infinite alternate;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #4a6fd4, transparent);
+      top: -100px; left: -100px;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #3ec45a, transparent);
+      bottom: -80px; right: -80px;
+      animation-delay: -4s;
+    }
+    @keyframes blobFloat {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.1); }
+    }
+
+    .page { display: none; width: 100%; max-width: 480px; padding: 16px; }
+    .page.active { display: flex; flex-direction: column; align-items: center; min-height: auto; }
+
+    .card {
+      background: linear-gradient(145deg, #3b52a5cc, #2b3a6bcc);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      padding: 48px 40px;
+      text-align: center;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+      width: 100%;
+      animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes cardIn {
+      from { opacity:0; transform: translateY(40px) scale(0.95); }
+      to   { opacity:1; transform: translateY(0) scale(1); }
+    }
+
+    .emoji-icon {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 16px;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2.4rem;
+      color: var(--white);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .tagline {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-top: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 999px;
+      padding: 18px 48px;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(62,196,90,0.45), 0 2px 8px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      border-radius: inherit;
+    }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 40px rgba(62,196,90,0.55); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.15);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 10px 24px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 12px;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.07); color: var(--white); }
+
+    .form-group { width: 100%; margin-bottom: 16px; text-align: left; }
+    label { display: block; color: var(--text-muted); font-size: 0.82rem; font-weight: 500; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
+    input[type="text"] {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: var(--blue-light);
+      background: rgba(255,255,255,0.11);
+    }
+    input::placeholder { color: rgba(168,184,232,0.5); }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+    .menu-item {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 18px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      position: relative;
+    }
+    .menu-item:hover { background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+    .menu-item.selected { border-color: var(--green); background: rgba(62,196,90,0.12); box-shadow: 0 0 0 1px var(--green) inset; }
+    .menu-item .item-emoji { font-size: 2rem; display: block; margin-bottom: 6px; }
+    .menu-item .item-name { color: var(--white); font-weight: 600; font-size: 0.95rem; display: block; }
+    .menu-item .item-price { color: var(--gold); font-size: 0.85rem; font-weight: 500; }
+    .menu-item .check-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: var(--green);
+      color: white;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      font-size: 11px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .menu-item.selected .check-badge { display: flex; }
+
+    .order-summary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 18px 20px;
+      width: 100%;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .order-summary h3 { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .order-row { display: flex; justify-content: space-between; color: var(--white); font-size: 0.95rem; padding: 4px 0; }
+    .order-row.total { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 8px; padding-top: 10px; font-weight: 700; color: var(--gold); }
+
+    .timer-ring-wrap {
+      position: relative;
+      width: 160px; height: 160px;
+      margin: 16px auto 24px;
+    }
+    .timer-ring-wrap svg { transform: rotate(-90deg); }
+    .timer-track { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 10; }
+    .timer-bar   { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.5s; }
+    .timer-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #timer-display {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1;
+    }
+    .timer-label { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+    .status-steps {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .status-steps::before {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 16px; right: 16px;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      z-index: 0;
+    }
+    .step { flex: 1; text-align: center; position: relative; z-index: 1; }
+    .step-dot {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 6px;
+      font-size: 0.9rem;
+      transition: all 0.4s;
+    }
+    .step.done .step-dot   { background: var(--green); border-color: var(--green); }
+    .step.active .step-dot { background: var(--blue-light); border-color: var(--blue-light); box-shadow: 0 0 0 4px rgba(74,111,212,0.3); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 4px rgba(74,111,212,0.3);} 50%{box-shadow:0 0 0 8px rgba(74,111,212,0.1);} }
+    .step-label { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .step.done .step-label, .step.active .step-label { color: var(--white); }
+
+    .confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+    .free-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), #e6a800);
+      color: #1a1200;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      padding: 14px 32px;
+      border-radius: 999px;
+      margin: 16px 0;
+      box-shadow: 0 8px 30px rgba(245,200,66,0.5);
+      animation: freePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes freePop {
+      from { transform: scale(0); opacity:0; }
+      to   { transform: scale(1); opacity:1; }
+    }
+
+    .receipt {
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      border-radius: 18px;
+      padding: 20px;
+      width: 100%;
+      margin: 16px 0;
+      text-align: left;
+    }
+    .receipt-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.9rem; color: var(--off-white); }
+    .receipt-row.highlight { color: var(--gold); font-weight: 700; font-size: 1rem; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 12px; margin-top: 6px; }
+    .receipt-divider { border: none; border-top: 1px dashed rgba(255,255,255,0.15); margin: 8px 0; }
+
+    .mt-sm { margin-top: 10px; }
+    .mt-md { margin-top: 20px; }
+    .error-msg { color: var(--danger); font-size: 0.85rem; margin-top: -10px; margin-bottom: 10px; display: none; }
+  </style>
+</head>
+<body>
+
+<canvas class="confetti-canvas" id="confetti-canvas"></canvas>
+
+<!-- PAGE 1: LANDING -->
+<div class="page active" id="page-landing">
+  <div class="card">
+    <span class="emoji-icon">🏫</span>
+    <h1>ACE Canteen</h1>
+    <p class="tagline">Your samosas are just a click away.<br>Fresh, fast &amp; always hot.</p>
+    <button class="btn-primary" onclick="goTo('page-order')">START ORDER</button>
+    <div class="badge">⚡ 5 Mins or it's FREE!</div>
+  </div>
+</div>
+
+<!-- PAGE 2: ORDER FORM -->
+<div class="page" id="page-order">
+  <div class="card">
+    <span class="emoji-icon">📋</span>
+    <h2>Place Your Order</h2>
+    <p class="tagline" style="margin-bottom:24px;">Pick your items &amp; details</p>
+
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="student-name" placeholder="e.g. Riya Sharma" />
+    </div>
+    <p class="error-msg" id="name-error">⚠ Please enter your name</p>
+
+    <div class="form-group">
+      <label>Roll Number</label>
+      <input type="text" id="roll-no" placeholder="e.g. ACE2024-042" />
+    </div>
+
+    <div class="form-group">
+      <label>Choose Your Items</label>
+    </div>
+
+    <div class="menu-grid" id="menu-grid"></div>
+    <p class="error-msg" id="item-error">⚠ Select at least one item</p>
+
+    <div class="order-summary" id="order-summary" style="display:none;">
+      <h3>Order Summary</h3>
+      <div id="summary-rows"></div>
+      <div class="order-row total">
+        <span>Total</span>
+        <span id="summary-total">₹0</span>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="placeOrder()">CONFIRM ORDER 🛒</button>
+    <button class="btn-secondary" onclick="goTo('page-landing')">← Back</button>
+  </div>
+</div>
+
+<!-- PAGE 3: TRACKING -->
+<div class="page" id="page-track">
+  <div class="card">
+    <h2>Order Tracking</h2>
+    <p class="tagline" id="track-name-label" style="margin-bottom:16px;">Hey there! Your order is live.</p>
+
+    <div class="status-steps">
+      <div class="step done" id="step-placed">
+        <div class="step-dot">✓</div>
+        <div class="step-label">Placed</div>
+      </div>
+      <div class="step active" id="step-prep">
+        <div class="step-dot">🍳</div>
+        <div class="step-label">Prep</div>
+      </div>
+      <div class="step" id="step-ready">
+        <div class="step-dot">📦</div>
+        <div class="step-label">Ready</div>
+      </div>
+      <div class="step" id="step-done-step">
+        <div class="step-dot">✅</div>
+        <div class="step-label">Delivered</div>
+      </div>
+    </div>
+
+    <div class="timer-ring-wrap">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <circle class="timer-track" cx="80" cy="80" r="70"/>
+        <circle class="timer-bar" id="timer-ring" cx="80" cy="80" r="70"
+          stroke-dasharray="439.82"
+          stroke-dashoffset="0"
+          stroke="var(--green)"/>
+      </svg>
+      <div class="timer-center">
+        <span id="timer-display">05:00</span>
+        <span class="timer-label">remaining</span>
+      </div>
+    </div>
+
+    <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:20px;">
+      ⚡ Session persists — closing &amp; reopening this page won't reset the clock!
+    </p>
+
+    <div class="receipt" id="track-receipt"></div>
+
+    <button class="btn-primary" style="width:100%;" onclick="markDelivered()">✅ Mark as Delivered</button>
+    <button class="btn-secondary" onclick="resetApp()">Cancel Order</button>
+  </div>
+</div>
+
+<!-- PAGE 4: FREE MEAL -->
+<div class="page" id="page-free">
+  <div class="card">
+    <span class="emoji-icon" style="animation:none; font-size:4rem;">🎉</span>
+    <h2>It's FREE!</h2>
+    <p class="tagline">Our kitchen took longer than 5 minutes.<br>Your meal is on the house today!</p>
+    <div class="free-badge">🍽 MEAL ON US!</div>
+    <div class="receipt" id="free-receipt"></div>
+    <button class="btn-primary mt-md" onclick="resetApp()">Order Again 🔄</button>
+  </div>
+</div>
+
+<!-- PAGE 5: DELIVERED -->
+<div class="page" id="page-delivered">
+  <div class="card">
+    <span class="emoji-icon" style="animation:none;">😋</span>
+    <h2>Enjoy Your Meal!</h2>
+    <p class="tagline">Order delivered in time.<br>Hope it's delicious! 🧡</p>
+    <div class="receipt" id="delivered-receipt"></div>
+    <button class="btn-primary mt-md" onclick="resetApp()">New Order 🔄</button>
+  </div>
+</div>
+
+<script>
+  // ── MENU DATA ──
+  const MENU = [
+    { id: 'samosa', name: 'Samosa',   emoji: '🥟', price: 15 },
+    { id: 'chai',   name: 'Chai',     emoji: '🍵', price: 10 },
+    { id: 'vada',   name: 'Vada Pav', emoji: '🍔', price: 20 },
+    { id: 'juice',  name: 'Juice',    emoji: '🧃', price: 25 },
+    { id: 'dosa',   name: 'Dosa',     emoji: '🫓', price: 30 },
+    { id: 'coffee', name: 'Coffee',   emoji: '☕', price: 20 },
+  ];
+
+  const DEADLINE_MS = 5 * 60 * 1000;
+  const STEP_TIMES  = [0, 60, 120, 240]; // seconds for each status step
+  const CIRC        = 2 * Math.PI * 70;  // SVG circle circumference
+
+  let timerInterval = null;
+  let selectedItems = new Set();
+
+  // ── SESSION (in-memory, simulates server-side HttpSession) ──
+  let _session = null;
+  function saveSession(data) { _session = JSON.parse(JSON.stringify(data)); }
+  function loadSession()     { return _session; }
+  function clearSession()    { _session = null; }
+
+  // ── PAGE ROUTER ──
+  function goTo(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(pageId);
+    page.classList.add('active');
+    // Re-trigger card animation
+    const card = page.querySelector('.card');
+    if (card) { card.style.animation = 'none'; card.offsetHeight; card.style.animation = ''; }
+  }
+
+  // ── BUILD MENU ──
+  function buildMenu() {
+    document.getElementById('menu-grid').innerHTML = MENU.map(item => `
+      <div class="menu-item" id="mi-${item.id}" onclick="toggleItem('${item.id}')">
+        <div class="check-badge">✓</div>
+        <span class="item-emoji">${item.emoji}</span>
+        <span class="item-name">${item.name}</span>
+        <span class="item-price">₹${item.price}</span>
+      </div>`).join('');
+  }
+
+  function toggleItem(id) {
+    if (selectedItems.has(id)) selectedItems.delete(id);
+    else selectedItems.add(id);
+    document.getElementById('mi-' + id).classList.toggle('selected', selectedItems.has(id));
+    updateSummary();
+    document.getElementById('item-error').style.display = 'none';
+  }
+
+  function updateSummary() {
+    const wrap = document.getElementById('order-summary');
+    if (selectedItems.size === 0) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    let total = 0;
+    document.getElementById('summary-rows').innerHTML = [...selectedItems].map(id => {
+      const item = MENU.find(m => m.id === id);
+      total += item.price;
+      return `<div class="order-row"><span>${item.emoji} ${item.name}</span><span>₹${item.price}</span></div>`;
+    }).join('');
+    document.getElementById('summary-total').textContent = '₹' + total;
+  }
+
+  // ── PLACE ORDER ──
+  function placeOrder() {
+    const name = document.getElementById('student-name').value.trim();
+    const roll = document.getElementById('roll-no').value.trim() || 'N/A';
+    let valid = true;
+
+    if (!name) { document.getElementById('name-error').style.display = 'block'; valid = false; }
+    else        { document.getElementById('name-error').style.display = 'none'; }
+    if (selectedItems.size === 0) { document.getElementById('item-error').style.display = 'block'; valid = false; }
+    else                          { document.getElementById('item-error').style.display = 'none'; }
+    if (!valid) return;
+
+    const items = [...selectedItems].map(id => MENU.find(m => m.id === id));
+    const total = items.reduce((s, i) => s + i.price, 0);
+    const orderId = 'ACE-' + Date.now().toString(36).toUpperCase();
+
+    const session = {
+      orderId, name, roll,
+      items: items.map(i => ({ id: i.id, name: i.name, emoji: i.emoji, price: i.price })),
+      total,
+      placedAt: Date.now(),
+    };
+
+    saveSession(session);
+    startTracking(session);
+  }
+
+  // ── TRACKING ──
+  function startTracking(session) {
+    document.getElementById('track-name-label').textContent =
+      `Hey ${session.name}! Your order is live.`;
+    buildReceipt('track-receipt', session);
+    goTo('page-track');
+    runTimer(session);
+  }
+
+  function runTimer(session) {
+    if (timerInterval) clearInterval(timerInterval);
+    const ring    = document.getElementById('timer-ring');
+    const display = document.getElementById('timer-display');
+
+    timerInterval = setInterval(() => {
+      const elapsed   = Date.now() - session.placedAt;
+      const remaining = DEADLINE_MS - elapsed;
+
+      updateSteps(elapsed / 1000);
+
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        display.textContent = '00:00';
+        ring.style.strokeDashoffset = CIRC;
+        ring.style.stroke = 'var(--danger)';
+        showFreeMeal(session);
+        return;
+      }
+
+      const mins = Math.floor(remaining / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+      display.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+      const frac = remaining / DEADLINE_MS;
+      ring.style.strokeDashoffset = CIRC * (1 - frac);
+      ring.style.stroke = frac > 0.5 ? 'var(--green)' : frac > 0.2 ? 'var(--gold)' : 'var(--danger)';
+    }, 500);
+  }
+
+  function updateSteps(elapsedSec) {
+    const steps = ['step-placed','step-prep','step-ready','step-done-step'];
+    steps.forEach((id, i) => {
+      const el = document.getElementById(id);
+      el.classList.remove('done','active');
+      if (elapsedSec >= STEP_TIMES[i]) {
+        const isLast = i === steps.length - 1;
+        const nextDone = !isLast && elapsedSec >= STEP_TIMES[i + 1];
+        el.classList.add(nextDone || isLast ? 'done' : 'active');
+      }
+    });
+  }
+
+  function markDelivered() {
+    clearInterval(timerInterval);
+    const session = loadSession();
+    if (!session) return;
+    const elapsed = Date.now() - session.placedAt;
+
+    if (elapsed > DEADLINE_MS) {
+      showFreeMeal(session);
+    } else {
+      buildReceipt('delivered-receipt', session, elapsed);
+      goTo('page-delivered');
+      clearSession();
+    }
+  }
+
+  // ── FREE MEAL ──
+  function showFreeMeal(session) {
+    clearInterval(timerInterval);
+    buildReceipt('free-receipt', session, null, true);
+    goTo('page-free');
+    clearSession();
+    launchConfetti();
+  }
+
+  // ── RECEIPT ──
+  function buildReceipt(elId, session, elapsedMs, isFree) {
+    const timeStr = elapsedMs != null
+      ? `${Math.floor(elapsedMs/60000)}m ${Math.floor((elapsedMs%60000)/1000)}s`
+      : '—';
+    document.getElementById(elId).innerHTML = `
+      <div class="receipt-row"><span>Order ID</span><span>${session.orderId}</span></div>
+      <div class="receipt-row"><span>Name</span><span>${session.name}</span></div>
+      <div class="receipt-row"><span>Roll No.</span><span>${session.roll}</span></div>
+      <hr class="receipt-divider"/>
+      ${session.items.map(i =>
+        `<div class="receipt-row"><span>${i.emoji} ${i.name}</span><span>₹${i.price}</span></div>`
+      ).join('')}
+      <div class="receipt-row highlight">
+        <span>Total</span>
+        <span>${isFree ? '<del>₹'+session.total+'</del> ₹0 🎉' : '₹'+session.total}</span>
+      </div>
+      ${elapsedMs != null ? `<div class="receipt-row"><span>Delivered In</span><span>${timeStr}</span></div>` : ''}
+      ${isFree ? `<div class="receipt-row" style="color:var(--green)"><span>Reason</span><span>⏰ Exceeded 5 mins</span></div>` : ''}
+    `;
+  }
+
+  // ── RESET ──
+  function resetApp() {
+    clearInterval(timerInterval);
+    clearSession();
+    selectedItems.clear();
+    document.getElementById('student-name').value = '';
+    document.getElementById('roll-no').value = '';
+    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('selected'));
+    document.getElementById('order-summary').style.display = 'none';
+    goTo('page-landing');
+  }
+
+  // ── CONFETTI ──
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const COLORS = ['#f5c842','#3ec45a','#4a6fd4','#ff6b6b','#ffffff','#ff9f43'];
+    const pieces = Array.from({length: 200}, () => ({
+      x: Math.random() * canvas.width,
+      y: -Math.random() * canvas.height * 0.5,
+      r: Math.random() * 7 + 3,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 4 + 2,
+      rot: Math.random() * 360,
+      vr: (Math.random() - 0.5) * 6,
+      shape: Math.random() > 0.5 ? 'rect' : 'circle',
+    }));
+
+    let frame, tick = 0;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = 0.9;
+        if (p.shape === 'rect') ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+        else { ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill(); }
+        ctx.restore();
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.05;
+      });
+      tick++;
+      if (tick < 240) frame = requestAnimationFrame(draw);
+      else ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+    draw();
+  }
+
+  // ── INIT ──
+  buildMenu();
+
+  // ★ SESSION PERSISTENCE DEMO ★
+  // In a real Java Servlet app, HttpSession persists on the SERVER —
+  // so refreshing the browser would restore this state automatically.
+  // Here we simulate that with an in-memory variable (_session).
+</script>
+</body>
+</html>
